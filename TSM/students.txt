@@ -1,0 +1,39 @@
+BCY243024
+Mohsin Rasul
+Computer Science
+PF1 N
+PF2 N
+PF3 N
+PF4 N
+PF5 N
+PF6 N
+PF7 N
+PF8 N
+PF9 N
+PF10 N
+0
+,A
+,P
+,F
+,P
+,F
+,P
+,F
+,P
+,F
+,P
+-1.07374e+08
+BCY243011
+Abdullah
+
+PF1,N
+PF2,N
+PF3,N
+PF4,N
+PF5,N
+PF6,N
+PF7,N
+PF8,N
+PF9,N
+PF10,N
+0
