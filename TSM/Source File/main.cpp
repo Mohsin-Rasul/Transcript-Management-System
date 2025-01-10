@@ -1,9 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <vector>
 #include <cstring>
-#include <limits>
 
 using namespace std;
 
@@ -12,6 +10,9 @@ const int MAX_SUBJECTS = 5;
 const int SEMESTERS = 2;
 const int MAX_NAME_LENGTH = 50;
 const int MAX_ID_LENGTH = 20;
+const int MAX_USERS = 20;
+const int MAX_DEPARTMENTS = 3;
+const int MAX_COURSES = 3;
 
 struct Subject {
     char name[MAX_NAME_LENGTH];
@@ -26,6 +27,8 @@ struct Semester {
 struct Student {
     char id[MAX_ID_LENGTH];
     char name[MAX_NAME_LENGTH];
+    char department[MAX_NAME_LENGTH];
+    char course[MAX_NAME_LENGTH];
     Semester semesters[SEMESTERS];
     float cgpa;
 };
@@ -35,20 +38,69 @@ struct User {
     char password[MAX_NAME_LENGTH];
 };
 
-vector<Student> students;
-vector<User> users;
+Student students[MAX_STUDENTS];
+User users[MAX_USERS];
+int studentCount = 0;
+int userCount = 0;
 bool isLoggedIn = false;
 
-float gradeToPoints(char grade) {
-    switch (toupper(grade)) {
-    case 'A': return 4.0;
-    case 'B': return 3.0;
-    case 'C': return 2.0;
-    case 'D': return 1.0;
-    default: return 0.0;
-    }
-}
+// Predefined subjects for departments and courses
+const char departments[MAX_DEPARTMENTS][MAX_NAME_LENGTH] = {
+    "Computer Science", "Electrical Engineering", "Mechanical Engineering"
+};
 
+const char courses[MAX_DEPARTMENTS][MAX_COURSES][MAX_NAME_LENGTH] = {
+    {"Cybersecurity", "Software Engineering", "Data Science"},
+    {"Power Systems", "Electronics", "Control Systems"},
+    {"Thermodynamics", "Robotics", "Fluid Mechanics"}
+};
+
+const char subjects[MAX_DEPARTMENTS][MAX_COURSES][SEMESTERS][MAX_SUBJECTS][MAX_NAME_LENGTH] = {
+    { // Computer Science
+        { // Cybersecurity
+            {"Intro to Cybersecurity", "Programming Fundamentals", "Discrete Mathematics", "Digital Logic", "Communication Skills"},
+            {"Data Structures", "Operating Systems", "Network Security", "DBMS", "Professional Ethics"}
+        },
+        { // Software Engineering
+            {"Software Engineering Fundamentals", "Programming Fundamentals", "Discrete Mathematics", "Digital Logic", "Communication Skills"},
+            {"Data Structures", "Operating Systems", "Software Design", "DBMS", "Team Collaboration"}
+        },
+        { // Data Science
+            {"Intro to Data Science", "Programming Fundamentals", "Linear Algebra", "Digital Logic", "Communication Skills"},
+            {"Data Structures", "Statistics", "Machine Learning", "DBMS", "Visualization Techniques"}
+        }
+    },
+    { // Electrical Engineering
+        { // Power Systems
+            {"Intro to Power Systems", "Circuit Analysis", "Electromagnetics", "Digital Logic", "Communication Skills"},
+            {"Power Electronics", "Power Systems Analysis", "Control Systems", "DBMS", "Professional Ethics"}
+        },
+        { // Electronics
+            {"Intro to Electronics", "Circuit Analysis", "Electromagnetics", "Digital Logic", "Communication Skills"},
+            {"Analog Electronics", "Digital Electronics", "Control Systems", "DBMS", "Professional Ethics"}
+        },
+        { // Control Systems
+            {"Intro to Control Systems", "Circuit Analysis", "Electromagnetics", "Digital Logic", "Communication Skills"},
+            {"Control Systems Design", "Signals and Systems", "Process Control", "DBMS", "Robotics"}
+        }
+    },
+    { // Mechanical Engineering
+        { // Thermodynamics
+            {"Intro to Thermodynamics", "Mechanics", "Material Science", "Digital Logic", "Communication Skills"},
+            {"Fluid Mechanics", "Thermal Systems", "Heat Transfer", "DBMS", "Energy Systems"}
+        },
+        { // Robotics
+            {"Intro to Robotics", "Mechanics", "Material Science", "Digital Logic", "Communication Skills"},
+            {"Advanced Robotics", "Control Systems", "Machine Dynamics", "DBMS", "Automation"}
+        },
+        { // Fluid Mechanics
+            {"Intro to Fluid Mechanics", "Mechanics", "Material Science", "Digital Logic", "Communication Skills"},
+            {"Advanced Fluid Mechanics", "Hydraulics", "Heat Transfer", "DBMS", "Energy Systems"}
+        }
+    }
+};
+
+// Function Prototypes
 void displayMenu();
 void addStudent();
 void enterGrades();
@@ -58,15 +110,11 @@ void generateTranscript();
 void saveToFile();
 void loadFromFile();
 void searchStudent();
+void clearInputBuffer();
 void loadUsers();
 void saveUsers();
 bool login();
 void signup();
-
-void clearInputBuffer() {
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-}
 
 int main() {
     int choice;
@@ -130,6 +178,8 @@ int main() {
     } while (true);
 }
 
+// Function Definitions
+
 void displayMenu() {
     cout << "\nTranscript Management System\n";
     cout << "1. Add Student\n";
@@ -140,178 +190,70 @@ void displayMenu() {
     cout << "Enter your choice: ";
 }
 
+void clearInputBuffer() {
+    cin.clear();
+    cin.ignore(1000, '\n');
+}
+
 void addStudent() {
-    if (students.size() < MAX_STUDENTS) {
-        Student newStudent;
-        cout << "Enter student ID (e.g., bcy243024): ";
-        cin.getline(newStudent.id, MAX_ID_LENGTH);
-        cout << "Enter student name: ";
-        cin.getline(newStudent.name, MAX_NAME_LENGTH);
-
-        for (int sem = 0; sem < SEMESTERS; ++sem) {
-            for (int subj = 0; subj < MAX_SUBJECTS; ++subj) {
-                cout << "Enter subject " << subj + 1 << " name for semester " << sem + 1 << ": ";
-                cin.getline(newStudent.semesters[sem].subjects[subj].name, MAX_NAME_LENGTH);
-                newStudent.semesters[sem].subjects[subj].grade = 'N';
-            }
-        }
-        newStudent.cgpa = 0;
-        students.push_back(newStudent);
-        cout << "Student added successfully.\n";
-    }
-    else {
+    if (studentCount >= MAX_STUDENTS) {
         cout << "Maximum number of students reached.\n";
+        return;
     }
-}
 
-void enterGrades() {
-    char id[MAX_ID_LENGTH];
+    Student& newStudent = students[studentCount];
     cout << "Enter student ID: ";
-    cin.getline(id, MAX_ID_LENGTH);
+    cin.getline(newStudent.id, MAX_ID_LENGTH);
+    cout << "Enter student name: ";
+    cin.getline(newStudent.name, MAX_NAME_LENGTH);
 
-    for (auto& student : students) {
-        if (strcmp(student.id, id) == 0) {
-            for (int sem = 0; sem < SEMESTERS; ++sem) {
-                cout << "Enter grades for semester " << sem + 1 << ":\n";
-                for (int subj = 0; subj < MAX_SUBJECTS; ++subj) {
-                    cout << student.semesters[sem].subjects[subj].name << " (A/B/C/D/F): ";
-                    cin >> student.semesters[sem].subjects[subj].grade;
-                    clearInputBuffer();
-                }
-                calculateGPA(student.semesters[sem]);
-            }
-            calculateCGPA(student);
-            cout << "Grades entered successfully.\n";
-            return;
+    // Select Department
+    cout << "Available Departments:\n";
+    for (int i = 0; i < MAX_DEPARTMENTS; i++) {
+        cout << i + 1 << ". " << departments[i] << "\n";
+    }
+    int deptChoice;
+    cout << "Select a department: ";
+    cin >> deptChoice;
+    clearInputBuffer();
+
+    if (deptChoice < 1 || deptChoice > MAX_DEPARTMENTS) {
+        cout << "Invalid choice. Aborting.\n";
+        return;
+    }
+
+    strcpy_s(newStudent.department, departments[deptChoice - 1]);
+
+    // Select Course
+    cout << "Available Courses:\n";
+    for (int i = 0; i < MAX_COURSES; i++) {
+        cout << i + 1 << ". " << courses[deptChoice - 1][i] << "\n";
+    }
+    int courseChoice;
+    cout << "Select a course: ";
+    cin >> courseChoice;
+    clearInputBuffer();
+
+    if (courseChoice < 1 || courseChoice > MAX_COURSES) {
+        cout << "Invalid choice. Aborting.\n";
+        return;
+    }
+
+    strcpy_s(newStudent.course, courses[deptChoice - 1][courseChoice - 1]);
+
+    // Assign Subjects
+    for (int sem = 0; sem < SEMESTERS; ++sem) {
+        for (int subj = 0; subj < MAX_SUBJECTS; ++subj) {
+            strcpy_s(newStudent.semesters[sem].subjects[subj].name, subjects[deptChoice - 1][courseChoice - 1][sem][subj]);
+            newStudent.semesters[sem].subjects[subj].grade = 'N'; // No grade assigned yet
         }
     }
-    cout << "Student not found.\n";
+    newStudent.cgpa = 0;
+    studentCount++;
+    cout << "Student added successfully.\n";
 }
 
-void calculateGPA(Semester& semester) {
-    float sum = 0;
-    int count = 0;
-    for (int i = 0; i < MAX_SUBJECTS; ++i) {
-        if (semester.subjects[i].grade != 'N') {
-            sum += gradeToPoints(semester.subjects[i].grade);
-            count++;
-        }
-    }
-    semester.gpa = (count > 0) ? sum / count : 0;
-}
-
-void calculateCGPA(Student& student) {
-    float sum = 0;
-    for (int i = 0; i < SEMESTERS; ++i) {
-        sum += student.semesters[i].gpa;
-    }
-    student.cgpa = sum / SEMESTERS;
-}
-
-void generateTranscript() {
-    char id[MAX_ID_LENGTH];
-    cout << "Enter student ID: ";
-    cin.getline(id, MAX_ID_LENGTH);
-
-    for (const auto& student : students) {
-        if (strcmp(student.id, id) == 0) {
-            cout << "\n" << string(50, '=') << endl;
-            cout << "Transcript for " << student.name << " (ID: " << student.id << ")" << endl;
-            cout << string(50, '=') << endl;
-
-            for (int sem = 0; sem < SEMESTERS; ++sem) {
-                cout << "\nSemester " << sem + 1 << ":" << endl;
-                cout << left << setw(30) << "Subject" << setw(10) << "Grade" << endl;
-                cout << string(40, '-') << endl;
-                for (int subj = 0; subj < MAX_SUBJECTS; ++subj) {
-                    if (student.semesters[sem].subjects[subj].grade != 'N') {
-                        cout << left << setw(30) << student.semesters[sem].subjects[subj].name
-                            << setw(10) << student.semesters[sem].subjects[subj].grade << endl;
-                    }
-                }
-                cout << string(40, '-') << endl;
-                cout << left << setw(30) << "GPA:" << fixed << setprecision(2) << student.semesters[sem].gpa << endl;
-                cout << string(40, '-') << endl;
-            }
-            cout << "\n" << left << setw(30) << "CGPA:" << fixed << setprecision(2) << student.cgpa << endl;
-            cout << string(50, '=') << endl;
-            return;
-        }
-    }
-    cout << "Student not found.\n";
-}
-
-void saveToFile() {
-    ofstream outFile("students.dat", ios::binary);
-    if (outFile.is_open()) {
-        size_t size = students.size();
-        outFile.write(reinterpret_cast<const char*>(&size), sizeof(size_t));
-        outFile.write(reinterpret_cast<const char*>(students.data()), size * sizeof(Student));
-        outFile.close();
-    }
-    else {
-        cout << "Unable to open file for writing.\n";
-    }
-}
-
-void loadFromFile() {
-    ifstream inFile("students.dat", ios::binary);
-    if (inFile.is_open()) {
-        size_t size;
-        inFile.read(reinterpret_cast<char*>(&size), sizeof(size_t));
-        students.resize(size);
-        inFile.read(reinterpret_cast<char*>(students.data()), size * sizeof(Student));
-        inFile.close();
-        cout << "Data loaded from file.\n";
-    }
-    else {
-        cout << "No existing data file found. Starting with empty database.\n";
-    }
-}
-
-void searchStudent() {
-    char id[MAX_ID_LENGTH];
-    cout << "Enter student ID to search: ";
-    cin.getline(id, MAX_ID_LENGTH);
-
-    for (const auto& student : students) {
-        if (strcmp(student.id, id) == 0) {
-            cout << "\nStudent found:\n";
-            cout << "Name: " << student.name << "\n";
-            cout << "ID: " << student.id << "\n";
-            cout << "CGPA: " << fixed << setprecision(2) << student.cgpa << "\n";
-            return;
-        }
-    }
-    cout << "Student not found.\n";
-}
-
-void loadUsers() {
-    ifstream inFile("users.dat", ios::binary);
-    if (inFile.is_open()) {
-        size_t size;
-        inFile.read(reinterpret_cast<char*>(&size), sizeof(size_t));
-        users.resize(size);
-        inFile.read(reinterpret_cast<char*>(users.data()), size * sizeof(User));
-        inFile.close();
-    }
-    else {
-        cout << "No existing user file found.\n";
-    }
-}
-
-void saveUsers() {
-    ofstream outFile("users.dat", ios::binary);
-    if (outFile.is_open()) {
-        size_t size = users.size();
-        outFile.write(reinterpret_cast<const char*>(&size), sizeof(size_t));
-        outFile.write(reinterpret_cast<const char*>(users.data()), size * sizeof(User));
-        outFile.close();
-    }
-    else {
-        cout << "Unable to save user file.\n";
-    }
-}
+// Login and Signup Functions
 
 bool login() {
     char username[MAX_NAME_LENGTH], password[MAX_NAME_LENGTH];
@@ -320,8 +262,8 @@ bool login() {
     cout << "Enter password: ";
     cin.getline(password, MAX_NAME_LENGTH);
 
-    for (const auto& user : users) {
-        if (strcmp(user.username, username) == 0 && strcmp(user.password, password) == 0) {
+    for (int i = 0; i < userCount; i++) {
+        if (strcmp(users[i].username, username) == 0 && strcmp(users[i].password, password) == 0) {
             return true;
         }
     }
@@ -329,12 +271,168 @@ bool login() {
 }
 
 void signup() {
-    User newUser;
+    if (userCount >= MAX_USERS) {
+        cout << "Maximum number of users reached.\n";
+        return;
+    }
+
+    User& newUser = users[userCount];
     cout << "Enter new username: ";
     cin.getline(newUser.username, MAX_NAME_LENGTH);
     cout << "Enter new password: ";
     cin.getline(newUser.password, MAX_NAME_LENGTH);
-    users.push_back(newUser);
+    userCount++;
     saveUsers();
     cout << "Signup successful.\n";
 }
+
+void saveUsers() {
+    ofstream outFile("users.dat", ios::binary);
+    if (!outFile) {
+        cout << "Error saving user data.\n";
+        return;
+    }
+    outFile.write(reinterpret_cast<const char*>(&userCount), sizeof(userCount));
+    outFile.write(reinterpret_cast<const char*>(users), sizeof(User) * userCount);
+    outFile.close();
+}
+
+void loadUsers() {
+    ifstream inFile("users.dat", ios::binary);
+    if (!inFile) {
+        cout << "No user data found.\n";
+        return;
+    }
+    inFile.read(reinterpret_cast<char*>(&userCount), sizeof(userCount));
+    inFile.read(reinterpret_cast<char*>(users), sizeof(User) * userCount);
+    inFile.close();
+}
+void enterGrades() {
+    char id[MAX_ID_LENGTH];
+    cout << "Enter student ID: ";
+    cin.getline(id, MAX_ID_LENGTH);
+
+    for (int i = 0; i < studentCount; ++i) {
+        if (strcmp(students[i].id, id) == 0) {
+            for (int sem = 0; sem < SEMESTERS; ++sem) {
+                cout << "Enter grades for Semester " << sem + 1 << ":\n";
+                for (int subj = 0; subj < MAX_SUBJECTS; ++subj) {
+                    cout << students[i].semesters[sem].subjects[subj].name << " (A/B/C/D/F): ";
+                    cin >> students[i].semesters[sem].subjects[subj].grade;
+                }
+                calculateGPA(students[i].semesters[sem]);
+            }
+            calculateCGPA(students[i]);
+            cout << "Grades entered successfully.\n";
+            return;
+        }
+    }
+    cout << "Student not found.\n";
+}
+void calculateGPA(Semester& semester) {
+    float totalPoints = 0;
+    int totalSubjects = 0;
+
+    for (int i = 0; i < MAX_SUBJECTS; ++i) {
+        char grade = semester.subjects[i].grade;
+        float gradePoints = 0;
+
+        switch (toupper(grade)) {
+        case 'A': gradePoints = 4.0; break;
+        case 'B': gradePoints = 3.0; break;
+        case 'C': gradePoints = 2.0; break;
+        case 'D': gradePoints = 1.0; break;
+        case 'F': gradePoints = 0.0; break;
+        default: gradePoints = 0.0; break;
+        }
+
+        totalPoints += gradePoints;
+        totalSubjects++;
+    }
+
+    semester.gpa = (totalSubjects > 0) ? totalPoints / totalSubjects : 0.0;
+}
+void calculateCGPA(Student& student) {
+    float totalGPA = 0;
+
+    for (int i = 0; i < SEMESTERS; ++i) {
+        totalGPA += student.semesters[i].gpa;
+    }
+
+    student.cgpa = totalGPA / SEMESTERS;
+}
+void generateTranscript() {
+    char id[MAX_ID_LENGTH];
+    cout << "Enter student ID: ";
+    cin.getline(id, MAX_ID_LENGTH);
+
+    for (int i = 0; i < studentCount; ++i) {
+        if (strcmp(students[i].id, id) == 0) {
+            cout << "\n--- Transcript for " << students[i].name << " (ID: " << students[i].id << ") ---\n";
+
+            for (int sem = 0; sem < SEMESTERS; ++sem) {
+                cout << "Semester " << sem + 1 << ":\n";
+                cout << left << setw(30) << "Subject" << setw(10) << "Grade" << "\n";
+                cout << string(40, '-') << "\n";
+
+                for (int subj = 0; subj < MAX_SUBJECTS; ++subj) {
+                    cout << left << setw(30) << students[i].semesters[sem].subjects[subj].name
+                        << setw(10) << students[i].semesters[sem].subjects[subj].grade << "\n";
+                }
+
+                cout << "GPA: " << fixed << setprecision(2) << students[i].semesters[sem].gpa << "\n";
+                cout << string(40, '-') << "\n";
+            }
+
+            cout << "Cumulative GPA (CGPA): " << fixed << setprecision(2) << students[i].cgpa << "\n";
+            return;
+        }
+    }
+
+    cout << "Student not found.\n";
+}
+void saveToFile() {
+    ofstream outFile("students.dat", ios::binary);
+    if (!outFile) {
+        cout << "Error saving student data.\n";
+        return;
+    }
+
+    outFile.write(reinterpret_cast<const char*>(&studentCount), sizeof(studentCount));
+    outFile.write(reinterpret_cast<const char*>(students), sizeof(Student) * studentCount);
+    outFile.close();
+    cout << "Data saved successfully.\n";
+}
+void loadFromFile() {
+    ifstream inFile("students.dat", ios::binary);
+    if (!inFile) {
+        cout << "No existing student data found.\n";
+        return;
+    }
+
+    inFile.read(reinterpret_cast<char*>(&studentCount), sizeof(studentCount));
+    inFile.read(reinterpret_cast<char*>(students), sizeof(Student) * studentCount);
+    inFile.close();
+    cout << "Data loaded successfully.\n";
+}
+void searchStudent() {
+    char id[MAX_ID_LENGTH];
+    cout << "Enter student ID to search: ";
+    cin.getline(id, MAX_ID_LENGTH);
+
+    for (int i = 0; i < studentCount; ++i) {
+        if (strcmp(students[i].id, id) == 0) {
+            cout << "\nStudent Found:\n";
+            cout << "Name: " << students[i].name << "\n";
+            cout << "ID: " << students[i].id << "\n";
+            cout << "Department: " << students[i].department << "\n";
+            cout << "Course: " << students[i].course << "\n";
+            cout << "CGPA: " << fixed << setprecision(2) << students[i].cgpa << "\n";
+            return;
+        }
+    }
+
+    cout << "Student not found.\n";
+}
+
+
