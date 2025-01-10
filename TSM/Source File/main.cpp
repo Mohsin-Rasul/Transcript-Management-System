@@ -49,7 +49,7 @@ const char departments[maxDepartments][maxNameL] = {
 };
 
 const char courses[maxDepartments][maxCourses][maxNameL] = {
-	{"Cybersecurity", "Software Engineering", "Data Science"},
+	{"Cyber Security", "Software Engineering", "Data Science"},
 	{"Power Systems", "Electronics", "Control Systems"},
 	{"Thermodynamics", "Robotics", "Fluid Mechanics"}
 };
@@ -57,7 +57,7 @@ const char courses[maxDepartments][maxCourses][maxNameL] = {
 const char subjects[maxDepartments][maxCourses][maxSem][maxSubjects][maxNameL] = {
 	{ // Computer Science
 		{ // Cybersecurity
-			{"Intro to Cybersecurity", "Programming Fundamentals", "Discrete Mathematics", "Digital Logic", "Communication Skills"},
+			{"Programming Lundamentals", "Ideology", "Functional English", "Calculus", "Applied Physics"},
 			{"Data Structures", "Operating Systems", "Network Security", "DBMS", "Professional Ethics"}
 		},
 		{ // Software Engineering
@@ -204,7 +204,7 @@ void addStudent() {
 	getline(cin, newStudent.name);
 
 	// Select Department
-	cout << "Available Departments:\n";
+	cout << "\nAvailable Departments:\n";
 	for (int i = 0; i < maxDepartments; i++) {
 		cout << i + 1 << ". " << departments[i] << "\n";
 	}
@@ -221,7 +221,7 @@ void addStudent() {
 	newStudent.department = departments[deptChoice - 1];
 
 	// Select Course
-	cout << "Available Courses:\n";
+	cout << "\nAvailable Courses:\n";
 	for (int i = 0; i < maxPrograms; i++) {
 		cout << i + 1 << ". " << courses[deptChoice - 1][i] << "\n";
 	}
@@ -237,7 +237,6 @@ void addStudent() {
 
 	newStudent.course = courses[deptChoice - 1][courseChoice - 1];
 
-	// Initialize subjects and grades for the maxSem
 	for (int sem = 0; sem < maxSem; sem++) {
 		newStudent.maxSem[sem].gpa = 0.0; // Initialize GPA
 		for (int subj = 0; subj < maxSubjects; subj++) {
@@ -321,8 +320,7 @@ void calculateGPA(Semester& semester) {
 	for (int i = 0; i < maxSubjects; ++i) {
 		char grade = semester.subjects[i].grade;
 		float gradePoints = 0;
-
-		switch (toupper(grade)) {
+		switch (grade) {
 		case 'A': gradePoints = 4.0; break;
 		case 'B': gradePoints = 3.0; break;
 		case 'C': gradePoints = 2.0; break;
@@ -337,6 +335,7 @@ void calculateGPA(Semester& semester) {
 
 	semester.gpa = (totalSubjects > 0) ? totalPoints / totalSubjects : 0.0;
 }
+
 
 void calculateCGPA(Student& student) {
 	float totalGPA = 0;
@@ -403,29 +402,57 @@ void generateTranscript() {
 }
 
 void saveToFile() {
-	ofstream outFile("students.txt");
+	ofstream outFile("students.txt",ios::ate);
 	if (!outFile) {
 		cout << "Error saving student data.\n";
 		return;
 	}
 
-	outFile << studentCount << endl; // Save student count
 	for (int i = 0; i < studentCount; ++i) {
-		outFile << students[i].id << endl;
-		outFile << students[i].name << endl;
+		outFile << "Student: " << i+1 << endl;
+		outFile << "Name: " << students[i].name << endl;
+		outFile << "Reg No: " << students[i].id << endl;
+		outFile << "----------------------------------------" << endl;
+
+		// Calculate the maximum subject name length across both semesters
+		int maxSubjectLength = 20; // Minimum width of 20 for consistent formatting
 		for (int sem = 0; sem < 2; ++sem) { // Assuming 2 maxSem
-			outFile << students[i].maxSem[sem].gpa << endl; // Save GPA
-			for (int subj = 0; subj < 5; ++subj) { // Assuming 5 subjects
-				outFile << students[i].maxSem[sem].subjects[subj].name << endl;
-				outFile << students[i].maxSem[sem].subjects[subj].grade << endl;
+			for (int subj = 0; subj < 5; ++subj) {
+				int currentLength = students[i].maxSem[sem].subjects[subj].name.length();
+				if (currentLength > maxSubjectLength) {
+					maxSubjectLength = currentLength;
+				}
 			}
 		}
-		outFile << students[i].cgpa << endl; // Save CGPA
+
+		for (int sem = 0; sem < 2; ++sem) { // Loop through semesters
+			outFile << "Subject Name" << string(maxSubjectLength - 11, ' ') << "Grade" << endl;
+			outFile << "----------------------------------------" << endl;
+
+			// Print subjects and grades for the semester
+			for (int subj = 0; subj < 5; ++subj) {
+				string subjectName = students[i].maxSem[sem].subjects[subj].name;
+				char gradeChar = students[i].maxSem[sem].subjects[subj].grade;
+
+				// Format output: Pad subject names to align grades
+				outFile << subjectName << string(maxSubjectLength - subjectName.length() + 1, ' ') << gradeChar << endl;
+			}
+
+			outFile << "----------------------------------------" << endl;
+			outFile << "GPA: " << students[i].maxSem[sem].gpa << endl;
+			outFile << "----------------------------------------" << endl;
+		}
+
+		outFile << "----------------------------------------" << endl;
+		outFile << "CGPA: " << students[i].cgpa << endl; // Save CGPA
+		outFile << "----------------------------------------\n\n";
 	}
 
 	outFile.close();
 	cout << "Data saved successfully.\n";
 }
+
+
 
 void loadFromFile() {
 	ifstream inFile("students.txt");
@@ -476,4 +503,3 @@ void searchStudent() {
 
 	cout << "Student not found.\n";
 }
-
