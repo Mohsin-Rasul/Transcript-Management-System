@@ -46,7 +46,7 @@ bool isLoggedIn = false;
 
 // Predefined subjects for departments and courses
 const char departments[MAX_DEPARTMENTS][MAX_NAME_LENGTH] = {
-    "Computer Science", "Electrical Engineering", "Mechanical Engineering"
+    "Cyber Security", "Electrical Engineering", "Mechanical Engineering"
 };
 
 const char courses[MAX_DEPARTMENTS][MAX_COURSES][MAX_NAME_LENGTH] = {
@@ -100,7 +100,6 @@ const char subjects[MAX_DEPARTMENTS][MAX_COURSES][SEMESTERS][MAX_SUBJECTS][MAX_N
     }
 };
 
-// Function Prototypes
 void displayMenu();
 void addStudent();
 void enterGrades();
@@ -178,7 +177,6 @@ int main() {
     } while (true);
 }
 
-// Function Definitions
 
 void displayMenu() {
     cout << "\nTranscript Management System\n";
@@ -207,7 +205,6 @@ void addStudent() {
     cout << "Enter student name: ";
     cin.getline(newStudent.name, MAX_NAME_LENGTH);
 
-    // Select Department
     cout << "Available Departments:\n";
     for (int i = 0; i < MAX_DEPARTMENTS; i++) {
         cout << i + 1 << ". " << departments[i] << "\n";
@@ -224,7 +221,6 @@ void addStudent() {
 
     strcpy_s(newStudent.department, departments[deptChoice - 1]);
 
-    // Select Course
     cout << "Available Courses:\n";
     for (int i = 0; i < MAX_COURSES; i++) {
         cout << i + 1 << ". " << courses[deptChoice - 1][i] << "\n";
@@ -241,11 +237,10 @@ void addStudent() {
 
     strcpy_s(newStudent.course, courses[deptChoice - 1][courseChoice - 1]);
 
-    // Assign Subjects
     for (int sem = 0; sem < SEMESTERS; ++sem) {
         for (int subj = 0; subj < MAX_SUBJECTS; ++subj) {
             strcpy_s(newStudent.semesters[sem].subjects[subj].name, subjects[deptChoice - 1][courseChoice - 1][sem][subj]);
-            newStudent.semesters[sem].subjects[subj].grade = 'N'; // No grade assigned yet
+            newStudent.semesters[sem].subjects[subj].grade = 'N'; 
         }
     }
     newStudent.cgpa = 0;
@@ -253,7 +248,6 @@ void addStudent() {
     cout << "Student added successfully.\n";
 }
 
-// Login and Signup Functions
 
 bool login() {
     char username[MAX_NAME_LENGTH], password[MAX_NAME_LENGTH];
