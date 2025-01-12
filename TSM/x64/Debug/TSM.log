@@ -1,5 +1,6 @@
-﻿  main.cpp
-C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\main.cpp(347,35): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  tms.cpp
+C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(384,32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(499,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   TSM.vcxproj -> C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\x64\Debug\TSM.exe
   'pwsh.exe' is not recognized as an internal or external command,
   operable program or batch file.

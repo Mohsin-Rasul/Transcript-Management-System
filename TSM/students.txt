@@ -1,39 +1,28 @@
-BCY243024
-Mohsin Rasul
-Computer Science
-PF1 N
-PF2 N
-PF3 N
-PF4 N
-PF5 N
-PF6 N
-PF7 N
-PF8 N
-PF9 N
-PF10 N
-0
-,A
-,P
-,F
-,P
-,F
-,P
-,F
-,P
-,F
-,P
--1.07374e+08
-BCY243011
-Abdullah
+Student: 1
+Name: Mohsin Rasul
+Reg No: BCY243024
+----------------------------------------
+Subject Name             Grade
+----------------------------------------
+Programming Lundamentals B
+Ideology                 A
+Functional English       A
+Calculus                 A
+Applied Physics          A
+----------------------------------------
+GPA: 3.8
+----------------------------------------
+Subject Name             Grade
+----------------------------------------
+Data Structures          A
+Operating Systems        A
+Network Security         A
+DBMS                     A
+Professional Ethics      A
+----------------------------------------
+GPA: 4
+----------------------------------------
+----------------------------------------
+CGPA: 3.9
+----------------------------------------
 
-PF1,N
-PF2,N
-PF3,N
-PF4,N
-PF5,N
-PF6,N
-PF7,N
-PF8,N
-PF9,N
-PF10,N
-0

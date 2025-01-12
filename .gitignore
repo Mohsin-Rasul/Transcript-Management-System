@@ -1,0 +1,10 @@
+
+*.vsidx
+*.vsidx
+*.db
+*.db
+*.db-shm
+.vs/TSM/v17/Browse.VC.opendb
+.vs/TSM/v17/Browse.VC.db-wal
+.vs/TSM/v17/Browse.VC.db-shm
+.vs/TSM/v17/Browse.VC.db
