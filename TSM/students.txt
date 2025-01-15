@@ -4,25 +4,25 @@ Reg No: BCY243024
 ----------------------------------------
 Subject Name             Grade
 ----------------------------------------
-Programming Lundamentals B
+Programming Fundamentals A
 Ideology                 A
 Functional English       A
 Calculus                 A
 Applied Physics          A
 ----------------------------------------
-GPA: 3.8
+GPA: 4
 ----------------------------------------
 Subject Name             Grade
 ----------------------------------------
-Data Structures          A
-Operating Systems        A
-Network Security         A
-DBMS                     A
-Professional Ethics      A
+Data Structures           
+Operating Systems         
+Network Security          
+DBMS                      
+Professional Ethics       
 ----------------------------------------
-GPA: 4
+GPA: 0
 ----------------------------------------
 ----------------------------------------
-CGPA: 3.9
+CGPA: 2
 ----------------------------------------
 
