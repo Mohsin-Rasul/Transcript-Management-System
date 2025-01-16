@@ -253,10 +253,9 @@ void addStudent() {
 bool login() {
 	string username, password;
 	cout << "Enter username: ";
-	getline(cin, username);
-	cin.ignore();
+	cin >> username;
 	cout << "Enter password: ";
-	getline(cin, password);
+	cin >> password;
 
 	for (int i = 0; i < userCount; i++) {
 		if (users[i].username == username && users[i].password == password) {
@@ -274,10 +273,10 @@ void signup() {
 
 	User& newUser = users[userCount];
 	cout << "Enter new username: ";
-	getline(cin, newUser.username); 
+	cin >> newUser.username;
 	cin.sync();
 	cout << "Enter new password: ";
-	getline(cin, newUser.password); 
+	cin>>newUser.password; 
 	userCount++;
 	saveUsers();
 	cout << "Signup successful.\n";
@@ -478,8 +477,6 @@ void saveToFile() {
 			outFile << "GPA: " << students[i].maxSem[sem].gpa << endl;
 			outFile << "----------------------------------------" << endl;
 		}
-
-		outFile << "----------------------------------------" << endl;
 		outFile << "CGPA: " << students[i].cgpa << endl; 
 		outFile << "----------------------------------------\n\n";
 	}
