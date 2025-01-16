@@ -1,10 +1,10 @@
 ﻿  tms.cpp
-C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(336,32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(412,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(417,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(426,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(460,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(568,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(335,32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(411,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(416,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(425,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(459,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\TSM\Source File\tms.cpp(565,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   TSM.vcxproj -> C:\Users\DELL\OneDrive\Documents\Sem 1\Programing Fundamentals Lab\Projects\TSM\x64\Debug\TSM.exe
   'pwsh.exe' is not recognized as an internal or external command,
   operable program or batch file.
